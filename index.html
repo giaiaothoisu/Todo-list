@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Todolist</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+      <div class="container">
+        <div class="row py-5 align-items-center justify-content-center">
+            <div class="content col-md-8">
+                <h1 class="title">Todolist</h1>
+                <div class="form-group d-flex">
+                    <input type="text" class="form-control mr-1" name="newtask" id="newtask" aria-describedby="helpId" placeholder="">
+                    <button id="addtodo" type="button" class="btn btn-primary">Add</button>
+                </div>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th class="w-100">Task name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="todo-list">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+      
+
+    <script>
+        //Declare
+        var todoList = document.getElementById('todo-list');
+        var todoinput = document.getElementById('newtask');
+        var addtodo = document.getElementById('addtodo');
+        var data = localStorage.getItem('todos');
+
+        var arrTodo = JSON.parse(data);
+        if(arrTodo == null){
+            arrTodo = [];
+        }
+
+        //Event
+        addtodo.addEventListener('click', addTodo);
+        todoinput.addEventListener('keypress', function(e){
+            if(e.keyCode == 13){
+                addTodo();
+            }
+        });
+        todoinput.value = sessionStorage.getItem('draf');
+        todoinput.addEventListener('change', updateSessionStorage)
+
+        function updateSessionStorage() {
+            sessionStorage.setItem('draf', todoinput.value);
+        }
+        function addTodo(){
+            var newtodo = {
+                id: Math.random().toString(36).substring(7),
+                content: todoinput.value
+            }
+            arrTodo.push(newtodo);
+            localStorage.setItem('todos', JSON.stringify(arrTodo));
+            render();
+            todoinput.value = '';
+            sessionStorage.removeItem('draf');
+        }
+        function render(){
+            var todos = arrTodo.map(function(todo){
+                return "<tr><td data-id="+ todo.id +">" + todo.content + "</td><td><button class=\"p-lg-1 btn btn-light\">Delete</button></td></tr>"
+            })
+            // console.log(todos);
+            todoList.innerHTML = todos.join('');
+        }
+        render();
+
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
